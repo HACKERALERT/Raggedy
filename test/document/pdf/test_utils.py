@@ -1,5 +1,5 @@
 from PySide6.QtGui import QImage, QColor, QPainter
-from src.document.pdf.utils import fill_transparent
+from document.pdf.utils import fill_transparent
 
 def test_fill_transparent_on_black() -> None:
     image = QImage(100, 100, QImage.Format.Format_ARGB32)
