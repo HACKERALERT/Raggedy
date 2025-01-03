@@ -1,15 +1,16 @@
-name: "Build"
+name: "Release"
+
+permissions:
+  contents: write
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  build:
-    name: Test Build
-    runs-on: macos-latest
+  release-latest:
+    name: Release latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -28,7 +29,10 @@ jobs:
         run: |
           python -m build
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
-          path: dist/*.whl
+          files: |
+            dist/*.whl
+          tag_name: latest
+          make_latest: true
