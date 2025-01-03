@@ -1,7 +1,7 @@
 from PySide6.QtCore import QSize
 from PySide6.QtPdf import QPdfDocument, QPdfDocumentRenderOptions
-from document.image.types import Image
-from document.pdf.utils import fill_transparent
+from raggedy.document.image.types import Image
+from raggedy.document.pdf.utils import fill_transparent
 
 class PDF:
     pass
