@@ -1,5 +1,7 @@
 from PySide6.QtGui import QImage, QColor
-from raggedy.document.pdf.utils import fill_transparent
+from PySide6.QtPdf import QPdfDocument
+from raggedy.document.image.types import Image
+from raggedy.document.pdf.utils import fill_transparent, pdf_page_to_image
 
 def test_fill_transparent_on_black() -> None:
 	image = QImage(100, 100, QImage.Format.Format_ARGB32)
@@ -30,3 +32,9 @@ def test_fill_transparent_on_transparent() -> None:
 	for x in range(filled.width()):
 		for y in range(filled.height()):
 			assert filled.pixelColor(x, y) == QColor(255, 255, 255)
+
+def test_pdf_page_to_image() -> None:
+	doc = QPdfDocument()
+	image = pdf_page_to_image(doc, 0)
+	assert doc.status() == QPdfDocument.Status.Ready
+	assert isinstance(image, Image)
