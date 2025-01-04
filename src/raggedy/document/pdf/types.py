@@ -19,6 +19,7 @@ class PDFParser:
 		assert exists(filepath) and filepath.lower().endswith(".pdf")
 		self._doc = QPdfDocument()
 		self._doc.load(filepath)
+		assert self._doc.status() == QPdfDocument.Status.Ready
 		self._filepath = filepath
 		self.num_pages = self._doc.pageCount()
 
