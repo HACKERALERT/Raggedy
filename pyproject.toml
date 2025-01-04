@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "raggedy"
-version = "0.0.3"
+version = "0.1.0"
 authors = [
     { name="Evan Su" },
 ]
-description = "The easiest way to attach documents to LLM/VLMs."
+description = "The easy and flexible way to interface with LLMs/VLMs."
 readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
