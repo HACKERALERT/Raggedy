@@ -17,7 +17,8 @@ class PDFParser:
 
 	def __init__(self, filepath: str) -> None:
 		assert exists(filepath) and filepath.lower().endswith(".pdf")
-		self._doc = QPdfDocument(filepath)
+		self._doc = QPdfDocument()
+		self._doc.load(filepath)
 		self._filepath = filepath
 		self.num_pages = self._doc.pageCount()
 
