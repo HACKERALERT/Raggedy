@@ -38,4 +38,4 @@ def test_pdf_page_to_image() -> None:
 	doc.load("tests/files/test.pdf")
 	image = pdf_page_to_image(doc, 0)
 	assert doc.status() == QPdfDocument.Status.Ready
-	assert isinstance(image, Image)
+	assert isinstance(image, Image) and isinstance(image._image, QImage)
