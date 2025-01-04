@@ -27,16 +27,17 @@ def fill_transparent(image: QImage, color: QColor = QColor(255, 255, 255)) -> QI
 
 def pdf_page_to_image(doc: QPdfDocument, page: int, dpi: int = 300) -> Image:
 	"""
-	Renders a page from a PDF into an Image.
+	Renders a page from a PDF document into an Image.
 	Automatically fills transparency with white.
+	It is the caller's responsibility to close the QPdfDocument when needed.
 
 	Args:
-		doc: the already-loaded QPdfDocument containing the page
-		page: the page number to render (0-indexed)
-		dpi: the dots per inch ("resolution") to render at (default is 300)
+		doc: the already-loaded QPdfDocument containing the page.
+		page: the page number to render (0-indexed).
+		dpi: the dots per inch ("resolution") to render at (default is 300).
 
 	Returns:
-		Image: the PDF page rendered as an image
+		Image: the PDF page rendered as an Image
 	"""
 	assert doc.status() == QPdfDocument.Status.Ready
 
@@ -44,8 +45,7 @@ def pdf_page_to_image(doc: QPdfDocument, page: int, dpi: int = 300) -> Image:
 	width = int(size.width() * dpi / 72.0)
 	height = int(size.height() * dpi / 72.0)
 
-	image = doc.render(page, QSize(width, height))
+	image = Image()
+	image._from(fill_transparent(doc.render(page, QSize(width, height))))
 
-	doc.close()
-	assert doc.status() == QPdfDocument.Status.Unloading
-	return fill_transparent(image)
+	return image
