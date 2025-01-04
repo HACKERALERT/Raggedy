@@ -25,32 +25,33 @@ class PDFParser:
 
 	def page(self, page_num: int) -> TextualDocument:
 		"""
-		Extract all text from a PDF page.
-		For complex PDFs with formatting, consider .page_as_image() instead.
+		Extract all text from a PDF page into a TextualDocument.
+		For PDFs with complex formatting, consider .page_as_image() instead.
 
 		Args:
-			page_num: the page number (0-indexed)
+			page_num: the page number (0-indexed).
 
 		Returns:
-			TextualDocument: contains the text contents
+			TextualDocument: contains the text contents.
 		"""
 		return TextualDocument(
 			basename(self._filepath),
-			self._doc.getAllText(page_num)
+			self._doc.getAllText(page_num).text(),
 		)
 
 	def page_as_image(self, page_num: int, dpi: int = 300) -> VisualDocument:
 		"""
 		Render the PDF page into an image and return as a VisualDocument.
+		Suitable for complex PDF pages as structure is preserved.
 
 		Args:
-			page_num: the page number (0-indexed)
-			dpi: the dots per inch ("resolution") to render at (default is 300)
+			page_num: the page number (0-indexed).
+			dpi: the dots per inch ("resolution") to render at (default is 300).
 
 		Returns:
-			VisualDocument: contains the image contents
+			VisualDocument: contains the image contents.
 		"""
-		return pdf_page_to_image(self._doc, page_num, dpi)
+		return pdf_page_to_image(self._filepath, self._doc, page_num, dpi)
 
 	def close(self) -> None:
 		return self._doc.close()
