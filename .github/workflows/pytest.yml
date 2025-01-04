@@ -1,4 +1,4 @@
-name: "Test on macOS"
+name: "Test"
 
 on:
   push:
@@ -7,9 +7,9 @@ on:
     branches: [ main ]
 
 jobs:
-  test-macos:
-    name: Test on macOS
-    runs-on: macos-latest
+  test:
+    name: Test
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -17,6 +17,13 @@ jobs:
         run: |
           docker pull ollama/ollama
           docker run -d -p 11434:11434 --name ollama ollama/ollama
+          sleep 10
+          docker exec ollama ollama pull llama3.2
+          docker exec ollama ollama pull llama3.2-vision
+
+      - name: Install apt packages
+        run: |
+          sudo apt install -y libegl1
 
       - name: Setup Python
         uses: actions/setup-python@v5
