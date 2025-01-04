@@ -1,4 +1,4 @@
-from ollama import chat
+from ollama import chat, Options
 from raggedy.chat.chat import Chat
 from raggedy.document.document import Document
 from raggedy.document.doctype import DocumentType
@@ -11,10 +11,19 @@ from os.path import join, exists
 class OllamaChat(Chat):
 	_model: str # "llama3.2", "llama3.2-vision", etc.
 	_messages: list[dict[str, str]] # standard { role, content } format
+	_options: Options
 
-	def __init__(self, model: str) -> None:
+	def __init__(self, model: str, temperature: float, num_ctx: int) -> None:
 		self._model = model
 		self._messages = []
+		if temperature == -1 and num_ctx == -1:
+			self._options = Options()
+		if temperature != -1 and num_ctx == -1:
+			self._options = Options(temperature=temperature)
+		if temperature == -1 and num_ctx != -1:
+			self._options = Options(num_ctx=num_ctx)
+		if temperature != -1 and num_ctx != -1:
+			self._options = Options(temperature=temperature, num_ctx=num_ctx)
 
 	def _ensure_latest_message_is_user(self) -> None:
 		if not self._messages or self._messages[-1]["role"] != "user":
@@ -25,7 +34,8 @@ class OllamaChat(Chat):
 		self._ensure_latest_message_is_user()
 
 		if doc._doctype == DocumentType.TEXTUAL:
-			inline = f"\n\n```{doc._filename}\n{doc._get_text()}\n```"
+			stripped = doc._get_text().strip().replace("```", "")
+			inline = f"\n\n```{doc._filename}\n{stripped}\n```"
 			self._messages[-1]["content"] += inline
 
 		elif doc._doctype == DocumentType.VISUAL:
@@ -61,7 +71,12 @@ class OllamaChat(Chat):
 		self._ensure_latest_message_is_user()
 		self._messages[-1]["content"] = message + "\n" + self._messages[-1]["content"]
 
-		res = chat(model=self._model, messages=self._messages, stream=False)
+		res = chat(
+			model=self._model,
+			messages=self._messages,
+			stream=False,
+			options=self._options,
+		)
 		text = res.message.content
 		if text is None:
 			raise EmptyOllamaResponseException
@@ -89,7 +104,12 @@ class OllamaChat(Chat):
 		self._ensure_latest_message_is_user()
 		self._messages[-1]["content"] = message + "\n" + self._messages[-1]["content"]
 
-		res = chat(model=self._model, messages=self._messages, stream=True)
+		res = chat(
+			model=self._model,
+			messages=self._messages,
+			stream=True,
+			options=self._options,
+		)
 		text = ""
 		for chunk in res:
 			text += chunk.message.content if chunk.message.content else ""
