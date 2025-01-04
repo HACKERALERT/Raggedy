@@ -8,7 +8,7 @@ class PDFParser:
 	"""
 	A PDFParser is a high-level helper to create Documents from a .pdf file.
 	It is the caller's responsibility to pass in a valid filepath.
-	DO NOT delete the filepath while using a PDFParser.
+	DO NOT delete the filepath while using the PDFParser.
 	Call .close() when finished, at which point you may delete the .pdf freely.
 	"""
 	_doc: QPdfDocument
