@@ -1,11 +1,9 @@
 from PySide6.QtPdf import QPdfDocument
 from os.path import exists
 from raggedy.document.document import Document
-from raggedy.document.image.types import Image
 from raggedy.document.pdf.utils import pdf_page_to_image
-
-class PDFPage(Document):
-	pass
+from raggedy.document.subclasses.visual import VisualDocument
+from raggedy.document.subclasses.textual import TextualDocument
 
 class PDF:
 	_doc: QPdfDocument
@@ -16,8 +14,8 @@ class PDF:
 		self._doc = QPdfDocument(filepath)
 		self.num_pages = self._doc.pageCount()
 
-	def page(self, page_num: int) -> PDFPage:
+	def page(self, page_num: int) -> TextualDocument:
 		pass
 
-	def page_as_image(self, page_num: int, dpi: int = 300) -> Image:
+	def page_as_image(self, page_num: int, dpi: int = 300) -> VisualDocument:
 		return pdf_page_to_image(self._doc, page_num, dpi)

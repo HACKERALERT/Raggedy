@@ -1,7 +1,8 @@
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QImage, QColor, QPainter
 from PySide6.QtPdf import QPdfDocument
-from raggedy.document.image.types import Image
+from raggedy.document.subclasses.visual import VisualDocument
+from os.path import basename
 
 def fill_transparent(image: QImage, color: QColor = QColor(255, 255, 255)) -> QImage:
 	"""
@@ -25,27 +26,33 @@ def fill_transparent(image: QImage, color: QColor = QColor(255, 255, 255)) -> QI
 
 	return background
 
-def pdf_page_to_image(doc: QPdfDocument, page: int, dpi: int = 300) -> Image:
+def pdf_page_to_image(
+	filepath: str,
+	doc: QPdfDocument,
+	page: int,
+	dpi: int = 300
+) -> VisualDocument:
 	"""
-	Renders a page from a PDF document into an Image.
-	Automatically fills transparency with white.
+	Renders a page from a PDF document into a VisualDocument.
+	Automatically fills any transparent pixels with solid white.
 	It is the caller's responsibility to close the QPdfDocument when needed.
 
 	Args:
+		filepath: the original path to the PDF to parse filename from.
 		doc: the already-loaded QPdfDocument containing the page.
 		page: the page number to render (0-indexed).
 		dpi: the dots per inch ("resolution") to render at (default is 300).
 
 	Returns:
-		Image: the PDF page rendered as an Image
+		VisualDocument: the PDF page rendered as an image
 	"""
-	assert doc.status() == QPdfDocument.Status.Ready
+	assert doc.status() == QPdfDocument.Status.Ready # PDF must be loaded
 
 	size = doc.pagePointSize(page)
-	width = int(size.width() * dpi / 72.0)
+	width = int(size.width() * dpi / 72.0) # one point is 1/72 of an inch
 	height = int(size.height() * dpi / 72.0)
 
-	image = Image()
-	image._from(fill_transparent(doc.render(page, QSize(width, height))))
-
-	return image
+	return VisualDocument(
+		basename(filepath),
+		fill_transparent(doc.render(page, QSize(width, height))),
+	)
