@@ -35,6 +35,7 @@ def test_fill_transparent_on_transparent() -> None:
 
 def test_pdf_page_to_image() -> None:
 	doc = QPdfDocument()
+	doc.load("tests/files/test.pdf")
 	image = pdf_page_to_image(doc, 0)
 	assert doc.status() == QPdfDocument.Status.Ready
 	assert isinstance(image, Image)
