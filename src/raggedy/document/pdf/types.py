@@ -29,11 +29,17 @@ class PDFParser:
 		For PDFs with complex formatting, consider .page_as_image() instead.
 
 		Args:
-			page_num: the page number (0-indexed).
+			page_num: the page number (0-indexed) from [0, self.num_pages).
 
 		Returns:
 			TextualDocument: contains the text contents.
+
+		Raises:
+			ValueError: if the provided page_num is out of range
 		"""
+		if page_num not in range(0, self.num_pages):
+			raise ValueError("page_num out of range")
+
 		return TextualDocument(
 			basename(self._filepath),
 			self._doc.getAllText(page_num).text(),
@@ -45,12 +51,18 @@ class PDFParser:
 		Suitable for complex PDF pages as structure is preserved.
 
 		Args:
-			page_num: the page number (0-indexed).
+			page_num: the page number (0-indexed) from [0, self.num_pages).
 			dpi: the dots per inch ("resolution") to render at (default is 300).
 
 		Returns:
 			VisualDocument: contains the image contents.
+
+		Raises:
+			ValueError: if the provided page_num is out of range
 		"""
+		if page_num not in range(0, self.num_pages):
+			raise ValueError("page_num out of range")
+
 		return pdf_page_to_image(self._filepath, self._doc, page_num, dpi)
 
 	def close(self) -> None:
