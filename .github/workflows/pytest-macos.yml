@@ -13,6 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install ollama
+        run: |
+          docker pull ollama/ollama
+          docker run -d -p 11434:11434 --name ollama ollama/ollama
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
