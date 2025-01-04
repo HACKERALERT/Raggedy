@@ -17,6 +17,14 @@ jobs:
         run: |
           sudo apt install -y libegl1
 
+      - name: Install ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama list
+          ollama pull llama3.2
+          ollama pull llama3.2-vision
+          ollama serve &
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
