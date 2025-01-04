@@ -4,7 +4,7 @@ from raggedy.document.document import Document
 from raggedy.document.image.types import Image
 from raggedy.document.pdf.utils import fill_transparent
 
-class PDFSlide:
+class PDFPage:
 	def to_image(self, dpi: int = 300) -> Image:
 		"""
 		Virtually renders a PDF slide into an Image.
@@ -24,12 +24,12 @@ class PDFSlide:
 		return fill_transparent(image)
 
 class PDF(Document):
-	slides: list[PDFSlide]
+	slides: list[PDFPage]
 
 	def __init__(self, filepath) -> None:
 		pass
 
-	def page(self, int) -> PDFSlide:
+	def page(self, int) -> PDFPage:
 		pass
 
 	def page_as_image(self, int) -> Image:
