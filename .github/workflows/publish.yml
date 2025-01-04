@@ -1,6 +1,10 @@
 name: "Publish to PyPI"
 
 on:
+  push:
+    paths:
+      - pyproject.toml
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
