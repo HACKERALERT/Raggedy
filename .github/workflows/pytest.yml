@@ -47,5 +47,6 @@ jobs:
       - name: Run pytest
         uses: nick-fields/retry@v3
         with:
+          retry_on: error
           max_attempts: 3
           command: pytest
