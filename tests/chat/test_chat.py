@@ -1,12 +1,12 @@
 from raggedy.chat.new_chat import chat
 
 def test_ollama_no_attachments_single_no_stream() -> None:
-	c = chat(to="ollama", model="llama3.1", temperature=0)
+	c = chat(to="ollama", model="llama3.2", temperature=0)
 	res = c.message("What color is the sky? Respond in one word.")
 	assert isinstance(res, str) and "blue" in res.lower()
 
 def test_ollama_no_attachments_single_streaming() -> None:
-	c = chat(to="ollama", model="llama3.1", temperature=0)
+	c = chat(to="ollama", model="llama3.2", temperature=0)
 	res = c.message_stream("What color is the sky? Why is that?")
 	total = ""
 	for chunk in res:
@@ -15,7 +15,7 @@ def test_ollama_no_attachments_single_streaming() -> None:
 	assert "blue" in total.lower()
 
 def test_ollama_no_attachments_multiple_no_stream() -> None:
-	c = chat(to="ollama", model="llama3.1", temperature=0)
+	c = chat(to="ollama", model="llama3.2", temperature=0)
 	res = c.message("My favorite number is 135. Please remember that.")
 	assert isinstance(res, str) and res
 
@@ -26,7 +26,7 @@ def test_ollama_no_attachments_multiple_no_stream() -> None:
 	assert isinstance(res, str) and "135" in res
 
 def test_ollama_no_attachments_multiple_streaming() -> None:
-	c = chat(to="ollama", model="llama3.1", temperature=0)
+	c = chat(to="ollama", model="llama3.2", temperature=0)
 	res = c.message_stream("My favorite number is 672. Please remember that.")
 	total = ""
 	for chunk in res:
@@ -49,7 +49,7 @@ def test_ollama_no_attachments_multiple_streaming() -> None:
 	assert "672" in total
 
 def test_ollama_image_attachment_no_stream() -> None:
-	c = chat(to="ollama", model="llama3.1-vision", temperature=0)
+	c = chat(to="ollama", model="llama3.2-vision", temperature=0)
 	res = c.message("My favorite number is 283. Please remember that.")
 	assert isinstance(res, str) and res
 
@@ -61,7 +61,7 @@ def test_ollama_image_attachment_no_stream() -> None:
 	assert isinstance(res, str) and "283" in res
 
 def test_ollama_text_attachment_no_stream() -> None:
-	c = chat(to="ollama", model="llama3.1", temperature=0)
+	c = chat(to="ollama", model="llama3.2", temperature=0)
 	res = c.message("My favorite number is 546. Please remember that.")
 	assert isinstance(res, str) and res
 
@@ -73,7 +73,7 @@ def test_ollama_text_attachment_no_stream() -> None:
 	assert isinstance(res, str) and "546" in res
 
 def test_ollama_pdf_single_page_no_stream() -> None:
-	c = chat(to="ollama", model="llama3.1", temperature=0)
+	c = chat(to="ollama", model="llama3.2", temperature=0)
 	res = c.message("My favorite number is 629. Please remember that.")
 	assert isinstance(res, str) and res
 
@@ -85,7 +85,7 @@ def test_ollama_pdf_single_page_no_stream() -> None:
 	assert isinstance(res, str) and "629" in res
 
 def test_ollama_pdf_single_page_as_image_no_stream() -> None:
-	c = chat(to="ollama", model="llama3.1-vision", temperature=0)
+	c = chat(to="ollama", model="llama3.2-vision", temperature=0)
 	res = c.message("My favorite number is 829. Please remember that.")
 	assert isinstance(res, str) and res
 
@@ -97,7 +97,7 @@ def test_ollama_pdf_single_page_as_image_no_stream() -> None:
 	assert isinstance(res, str) and "829" in res
 
 def test_ollama_pdf_all_pages_no_stream() -> None:
-	c = chat(to="ollama", model="llama3.1", num_ctx=16384, temperature=0)
+	c = chat(to="ollama", model="llama3.2", num_ctx=16384, temperature=0)
 	res = c.message("My favorite number is 206. Please remember that.")
 	assert isinstance(res, str) and res
 
@@ -118,17 +118,17 @@ def test_ollama_pdf_all_pages_no_stream() -> None:
 	assert isinstance(res, str) and "206" in res
 
 def test_ollama_options_default() -> None:
-	c = chat(to="ollama", model="llama3.1", temperature=0)
+	c = chat(to="ollama", model="llama3.2", temperature=0)
 	assert c._options.temperature is None and c._options.num_ctx is None
 
 def test_ollama_options_temperature() -> None:
-	c = chat(to="ollama", model="llama3.1", temperature=0.2)
+	c = chat(to="ollama", model="llama3.2", temperature=0.2)
 	assert c._options.temperature == 0.2 and c._options.num_ctx is None
 
 def test_ollama_options_num_ctx() -> None:
-	c = chat(to="ollama", model="llama3.1", num_ctx=40000)
+	c = chat(to="ollama", model="llama3.2", num_ctx=40000)
 	assert c._options.temperature is None and c._options.num_ctx == 40000
 
 def test_ollama_options_temperature_num_ctx() -> None:
-	c = chat(to="ollama", model="llama3.1", temperature=0.1, num_ctx=60000)
+	c = chat(to="ollama", model="llama3.2", temperature=0.1, num_ctx=60000)
 	assert c._options.temperature == 0.1 and c._options.num_ctx == 60000
