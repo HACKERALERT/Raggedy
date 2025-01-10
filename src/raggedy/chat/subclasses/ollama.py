@@ -15,7 +15,10 @@ class OllamaChat(Chat):
 
 	def __init__(self, model: str, temperature: float, num_ctx: int) -> None:
 		self._model = model
-		self._messages = []
+		self._messages = [{
+			"role": "system",
+			"content": "You are a helpful assistant.",
+		}]
 		if temperature == -1 and num_ctx == -1:
 			self._options = Options()
 		if temperature != -1 and num_ctx == -1:
@@ -30,24 +33,28 @@ class OllamaChat(Chat):
 
 	# @Override
 	def _attach_document(self, doc: Document) -> None:
-
 		if doc._doctype == DocumentType.TEXTUAL:
-			stripped = doc._get_text().strip().replace("```", "")
-			self._new_user_message(
-				f"File attachment: {doc._filename}\n```{stripped}\n```",
-			)
+			cleaned = doc._get_text().strip().replace("```", "\`\`\`")
+			self._new_user_message(f"User attached a file: {doc._filename}\n\nContents:\n```\n{cleaned}\n```")
 
 		elif doc._doctype == DocumentType.VISUAL:
-			filename = doc._filename
-			self._new_user_message(
-				f"Image attachment" + f": {filename}" if filename else "",
-			)
+			self._new_user_message(f"User attached an image:" + f" {doc._filename}" if doc._filename else "")
 			with TemporaryDirectory(delete=True) as tmp:
-				path = join(tmp, "tmp.png")
-				doc._get_image().save(path)
-				raw = Path(path).read_bytes()
-				self._messages[-1]["images"] = [raw]
-			assert not exists(path)
+				png = join(tmp, "tmp.png")
+				jpg = join(tmp, "tmp.jpg")
+				assert doc._get_image().save(png)
+				assert doc._get_image().save(jpg)
+				raw_png = Path(png).read_bytes()
+				raw_jpg = Path(jpg).read_bytes()
+
+				"""
+				Ollama accepts both .png and .jpg as images. Depending on the image contents, one may be a better choice:
+				- If the .png has a smaller size, the image likely contains graphical contents such as text or charts.
+				- If the .jpg has a smaller size, the image is likely a photographic image like a picture of a puppy.
+				Picking the image format with the smaller size optimizes both quality and minimizes context usage.
+				"""
+				self._messages[-1]["images"] = [raw_png if len(raw_png) <= len(raw_jpg) else raw_jpg]
+			assert not exists(png) and not exists(jpg)
 
 		elif doc._doctype == DocumentType.AUDIO:
 			raise NotImplementedError
@@ -58,7 +65,7 @@ class OllamaChat(Chat):
 	# @Override
 	def message(self, message: str) -> str:
 		"""
-		Send a message to the chat with ollama with streaming off.
+		Send a message to the chat with streaming off.
 
 		Args:
 			message: the text message to send to the model.
@@ -67,7 +74,7 @@ class OllamaChat(Chat):
 			str: the model's response.
 
 		Raises:
-			EmptyOllamaResponseException: if ollama's response is None (unlikely).
+			EmptyOllamaResponseException: if ollama's response is None or empty (unlikely).
 		"""
 		self._new_user_message(message)
 
@@ -78,7 +85,7 @@ class OllamaChat(Chat):
 			options=self._options,
 		)
 		text = res.message.content
-		if text is None:
+		if not text:
 			raise EmptyOllamaResponseException
 
 		self._messages.append({
@@ -90,7 +97,7 @@ class OllamaChat(Chat):
 	# @Override
 	def message_stream(self, message: str) -> Iterator[str]:
 		"""
-		Send a message to the chat with ollama with streaming on.
+		Send a message to the chat with streaming on.
 
 		Args:
 			message: the text to send to the model.
@@ -99,7 +106,7 @@ class OllamaChat(Chat):
 			Iterator[str]: the model's response yielded as chunks come in.
 
 		Raises:
-			EmptyOllamaResponseException: if ollama's response is None (unlikely).
+			EmptyOllamaResponseException: if ollama's response is None or empty (unlikely).
 		"""
 		self._new_user_message(message)
 
@@ -111,10 +118,11 @@ class OllamaChat(Chat):
 		)
 		text = ""
 		for chunk in res:
-			text += chunk.message.content if chunk.message.content else ""
-			yield chunk.message.content if chunk.message.content else ""
+			content = chunk.message.content if chunk.message.content else ""
+			text += content
+			yield content
 
-		if text is None:
+		if not text:
 			raise EmptyOllamaResponseException
 
 		self._messages.append({
