@@ -44,7 +44,7 @@ def pdf_page_to_image(
 		dpi: the dots per inch ("resolution") to render at (default is 300).
 
 	Returns:
-		VisualDocument: the PDF page rendered as an image
+		VisualDocument: the PDF page rendered as an image.
 	"""
 	assert doc.status() == QPdfDocument.Status.Ready # PDF must be loaded
 
