@@ -118,7 +118,7 @@ def test_ollama_pdf_all_pages_no_stream() -> None:
 	assert isinstance(res, str) and "206" in res
 
 def test_ollama_options_default() -> None:
-	c = chat(to="ollama", model="llama3.2", temperature=0)
+	c = chat(to="ollama", model="llama3.2")
 	assert c._options.temperature is None and c._options.num_ctx is None
 
 def test_ollama_options_temperature() -> None:
