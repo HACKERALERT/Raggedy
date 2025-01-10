@@ -126,9 +126,9 @@ def test_ollama_options_temperature() -> None:
 	assert c._options.temperature == 0.2 and c._options.num_ctx is None
 
 def test_ollama_options_num_ctx() -> None:
-	c = chat(to="ollama", model="llama3.2", num_ctx=40000)
-	assert c._options.temperature is None and c._options.num_ctx == 40000
+	c = chat(to="ollama", model="llama3.2", num_ctx=8000)
+	assert c._options.temperature is None and c._options.num_ctx == 8000
 
 def test_ollama_options_temperature_num_ctx() -> None:
-	c = chat(to="ollama", model="llama3.2", temperature=0.1, num_ctx=60000)
-	assert c._options.temperature == 0.1 and c._options.num_ctx == 60000
+	c = chat(to="ollama", model="llama3.2", temperature=0.1, num_ctx=9000)
+	assert c._options.temperature == 0.1 and c._options.num_ctx == 9000
