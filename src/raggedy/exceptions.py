@@ -10,5 +10,5 @@ class UnsupportedDocumentException(Exception):
 
 class EmptyOllamaResponseException(Exception):
 	"""
-	If ollama's response message content is None.
+	If ollama's response message content is None or empty.
 	"""
