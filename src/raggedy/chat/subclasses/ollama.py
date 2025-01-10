@@ -34,7 +34,7 @@ class OllamaChat(Chat):
 	# @Override
 	def _attach_document(self, doc: Document) -> None:
 		if doc._doctype == DocumentType.TEXTUAL:
-			cleaned = doc._get_text().strip().replace("```", "\`\`\`")
+			cleaned = doc._get_text().strip().replace("```", "\\`\\`\\`")
 			self._new_user_message(f"User attached a file: {doc._filename}\n\nContents:\n```\n{cleaned}\n```")
 
 		elif doc._doctype == DocumentType.VISUAL:

@@ -14,7 +14,7 @@ def _attach(filepath: str, page: int = -1, as_image: bool = False) -> Document:
 		if page == -1: # attach all pages
 			all_texts: list[str] = []
 			for i in range(parser.num_pages):
-				all_texts.append(parser.page(i)._get_text().strip().replace("```","\`\`\`"))
+				all_texts.append(parser.page(i)._get_text().strip().replace("```","\\`\\`\\`"))
 
 			combined = ""
 			for i in range(1, len(all_texts) + 1):
