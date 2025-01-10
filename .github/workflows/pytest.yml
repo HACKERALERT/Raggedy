@@ -51,3 +51,4 @@ jobs:
           retry_on: error
           max_attempts: 3
           command: pytest -vv
+          continue_on_error: false
