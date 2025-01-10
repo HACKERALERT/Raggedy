@@ -50,4 +50,4 @@ jobs:
           timeout_seconds: 3600
           retry_on: error
           max_attempts: 3
-          command: pytest
+          command: pytest -vv
